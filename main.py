@@ -6,11 +6,10 @@ import time
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-
 def dispatch(intent_request):
     '''Deals with the intent the user specifies
     '''
-    
+
     logger.debug('dispatch userId={}, intentName={}'.format(intent_request['userId'],
                                                             intent_request['currentIntent']['name']))
     intent_name = intent_request['currentIntent']['name']
