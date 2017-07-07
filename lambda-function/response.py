@@ -3,6 +3,7 @@
 of the necessary dialog actions.
 """
 
+
 def close(session_attributes, fulfillment_state, message):
     """Sends dialog action close, which informs lex not to expect a
     response from the user"""
