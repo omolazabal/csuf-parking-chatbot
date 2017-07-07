@@ -9,6 +9,7 @@ import fulfillment
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
+
 def dispatch(intent_request):
     """Deals with the intent the user specifies"""
 
@@ -22,7 +23,11 @@ def dispatch(intent_request):
     if intent_name == 'ListParkingLots':
         return fulfillment.list_parking(intent_request)
 
+    if intent_name == 'SpecificParking':
+        return fulfillment.specific_parking(intent_request)
+
     raise Exception('Intent with name {} not supported'.format(intent_name))
+
 
 def lambda_handler(event, context):
     """Main handler
