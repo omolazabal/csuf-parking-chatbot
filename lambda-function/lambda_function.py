@@ -13,8 +13,9 @@ logger.setLevel(logging.DEBUG)
 def dispatch(intent_request):
     """Deals with the intent the user specifies"""
 
-    logger.debug('dispatch userId={}, intentName={}'.format(intent_request['userId'],
-                                                            intent_request['currentIntent']['name']))
+    logger.debug('dispatch userId={}, intentName={}'
+                 .format(intent_request['userId'],
+                         intent_request['currentIntent']['name']))
     intent_name = intent_request['currentIntent']['name']
 
     if intent_name == 'OptimalParking':
@@ -31,8 +32,8 @@ def dispatch(intent_request):
 
 def lambda_handler(event, context):
     """Main handler
-    Event is used to pass in event data. Seems to be stored as nested dictionaries.
-    Context is used to provide runtime information.
+    Event is used to pass in event data. Seems to be stored as nested.
+    dictionaries. context is used to provide runtime information.
     """
 
     logger.debug('event.bot.name={}'.format(event['bot']['name']))
