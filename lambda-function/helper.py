@@ -3,8 +3,8 @@
 
 
 def try_ex(func):
-    """Call passed in function in try block. If KeyError is encountered return None.
-    This function is intended to be used to safely access dictionary.
+    """Call passed in function in try block. If KeyError is encountered return
+    None. This function is intended to be used to safely access dictionary.
     Note that this function would have negative impact on performance.
     """
 
@@ -37,7 +37,9 @@ def validate_parking_lot(parking_lot):
     if parking_lot is not None and parking_lot.lower() not in parking_lots:
         return build_validation_result(False,
                                        'ParkingLot',
-                                       'I do not know of any information regarding {}, would you '
-                                       'like to try a different parking lot?'.format(parking_lot))
+                                       'I do not know of any information'
+                                       'regarfing {}, would you '
+                                       'like to try a different parking '
+                                       'lot?'.format(parking_lot))
 
     return build_validation_result(True, None, None)
