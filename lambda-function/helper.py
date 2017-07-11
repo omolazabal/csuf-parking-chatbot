@@ -16,11 +16,6 @@ def try_ex(func):
 
 def build_validation_result(is_valid, violated_slot, message_content):
     """Creates the results for whether a parking lot is valid or not"""
-    if message_content is None:
-        return {
-            "isValid": is_valid,
-            "violatedSlot": violated_slot,
-        }
 
     return {
         'isValid': is_valid,
