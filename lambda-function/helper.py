@@ -38,8 +38,7 @@ def validate_parking_lot(parking_lot):
         return build_validation_result(False,
                                        'ParkingLot',
                                        'I do not know of any information'
-                                       'regarfing {}, would you '
-                                       'like to try a different parking '
-                                       'lot?'.format(parking_lot))
+                                       'regarding {}, try a different '
+                                       'parking lot.'.format(parking_lot))
 
     return build_validation_result(True, None, None)
