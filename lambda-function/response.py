@@ -6,9 +6,9 @@ of the necessary dialog actions.
 
 def elicit_slot(session_attributes, intent_name, slots,
                 slot_to_elicit, message):
-    """Elicit further data from the user. For example, if the user does not
-    provide the correct slots, this will be used to re-elicit their slot
-    values
+    """Sends dialog action elicit, which elicits further data from the user.
+    For example, if the user does not provide the correct slots, this will be
+    used to re-elicit their slot values
     """
 
     return {
@@ -24,8 +24,9 @@ def elicit_slot(session_attributes, intent_name, slots,
 
 
 def close(session_attributes, fulfillment_state, message):
-    """Sends dialog action close, which informs lex not to expect a
-    response from the user"""
+    """Sends dialog action close, which informs lex not to expect a response
+    from the user
+    """
 
     return {
         'sessionAttributes': session_attributes,
@@ -33,5 +34,20 @@ def close(session_attributes, fulfillment_state, message):
             'type': 'Close',
             'fulfillmentState': fulfillment_state,
             'message': message
+        }
+    }
+
+
+def delegate(session_attributes, slots):
+    """Sends dialog action delegate, which directs Amazon Lex to choose the
+    next course of action with the provided slots, rather than the lambda
+    function itself.
+    """
+
+    return {
+        'sessionAttributes': session_attributes,
+        'dialogAction': {
+            'type': 'Delegate',
+            'slots': slots
         }
     }
