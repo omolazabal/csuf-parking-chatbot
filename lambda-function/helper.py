@@ -20,14 +20,19 @@ def build_validation_result(is_valid, violated_slot, message_content):
     return {
         'isValid': is_valid,
         'violatedSlot': violated_slot,
-        'message': {'contentType': 'PlainText', 'content': message_content}
+        'message': {
+            'contentType': 'PlainText',
+            'content': message_content
+        }
     }
 
 
 def validate_parking_lot(parking_lot):
     """Checks whether the user's requested lot is valid"""
-    parking_lots = ['evfree church', 'state college', 'a and g', 'g',
-                    'a', 'eastside', 'nutwood', 'brea mall', 'all']
+    parking_lots = [
+        'evfree church', 'state college', 'a and g', 'g',
+        'a', 'eastside', 'nutwood', 'brea mall', 'all'
+    ]
 
     if parking_lot is not None and parking_lot.lower() not in parking_lots:
         return build_validation_result(False,

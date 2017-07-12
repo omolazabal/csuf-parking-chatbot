@@ -16,6 +16,7 @@ def dispatch(intent_request):
     logger.debug('dispatch userId={}, intentName={}'
                  .format(intent_request['userId'],
                          intent_request['currentIntent']['name']))
+
     intent_name = intent_request['currentIntent']['name']
 
     if intent_name == 'OptimalParking':
