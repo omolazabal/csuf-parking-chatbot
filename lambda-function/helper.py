@@ -14,6 +14,17 @@ def try_ex(func):
         return None
 
 
+def is_valid_lot(parking_lot):
+    """Check if passed parking lot is valid"""
+
+    valid_lots = [
+        'evfree church', 'state college', 'a and g', 'g',
+        'a', 'eastside', 'nutwood', 'brea mall', 'all'
+    ]
+
+    return parking_lot.lower() in valid_lots
+
+
 def build_validation_result(is_valid, violated_slot, message_content):
     """Creates the results for whether a parking lot is valid or not"""
 
@@ -27,15 +38,12 @@ def build_validation_result(is_valid, violated_slot, message_content):
     }
 
 
-def validate_parking_lot(parking_lot):
+def validate_parking_lot(slots):
     """Checks whether the user's requested lot is valid"""
 
-    parking_lots = [
-        'evfree church', 'state college', 'a and g', 'g',
-        'a', 'eastside', 'nutwood', 'brea mall', 'all'
-    ]
+    parking_lot = try_ex(lambda: slots['ParkingLot'])
 
-    if parking_lot is not None and parking_lot.lower() not in parking_lots:
+    if parking_lot and not is_valid_lot(parking_lot):
         return build_validation_result(
             False,
             'ParkingLot',
@@ -43,4 +51,4 @@ def validate_parking_lot(parking_lot):
             'parking lot.'.format(parking_lot)
         )
 
-    return build_validation_result(True, None, None)
+    return {'isValid': True}
