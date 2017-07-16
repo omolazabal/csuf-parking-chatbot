@@ -64,6 +64,11 @@ def optimal_parking(intent_request):
 def list_parking(intent_request):
     """Fulfillment for listing all available parking lots."""
 
+    # Clear session attributes to avoid confusion
+    if intent_request['sessionAttributes'] is not None:
+        session_attributes = intent_request['sessionAttributes']
+        helper.try_ex(lambda: session_attributes.pop('lastParkingRequest'))
+
     source = intent_request['invocationSource']
 
     if source == 'FulfillmentCodeHook':
@@ -249,10 +254,6 @@ def get_directions(intent_request):
         # Clear settings from sessionAttributes
         helper.try_ex(lambda: session_attributes.pop('currentParkingRequest'))
         helper.try_ex(lambda: session_attributes.pop('lastParkingRequest'))
-
-        # Keep track of what was the last parking lot the user requested
-        # information for.
-        session_attributes['lastParkingRequest'] = parking_request
 
         # End the intent.
         return response.close(
