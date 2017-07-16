@@ -34,6 +34,9 @@ def list_parking(intent_request):
     source = intent_request['invocationSource']
 
     if source == 'FulfillmentCodeHook':
+        # Called once the user has provided all information to fulfill the.
+        # intent. In this case it is called immediately because there are no
+        # slots for this intent.
         return response.close(
             intent_request['sessionAttributes'],
             'Fulfilled',
@@ -54,22 +57,22 @@ def specific_parking(intent_request):
         lambda: intent_request['currentIntent']['slots']['ParkingLot']
     )
 
-    # Use of sessionAttributes to pass information that can be used to
-    # guide conversation. Session attributes are pieces of information
-    # that the user has provided to the chatbot either in a previous
-    # intent or the current one.
+    # Use of sessionAttributes to store information that can be used to guide
+    # conversation. Session attributes are pieces of information that the
+    # user has provided to the chatbot either in a previous intent or the
+    # current one.
     if intent_request['sessionAttributes'] is not None:
         session_attributes = intent_request['sessionAttributes']
     else:
         session_attributes = {}
 
-    # Load slot value history for parking lots and track current parking
-    # request.
+    # Load slot value history for parking lots
     parking_request = json.dumps({
-        'ParkingRequest': 'Availability',
+        'ParkingRequest': 'LotAvailability',
         'ParkingLot': parking_lot
     })
 
+    # Track current parking request.
     session_attributes['currentParkingRequest'] = parking_request
 
     source = intent_request['invocationSource']
@@ -94,20 +97,23 @@ def specific_parking(intent_request):
                 validation_result['message']
             )
 
-        session_attributes['currentParkingRequest'] = parking_request
+        # Redirect to Amazon Lex to obtain slot values.
         return response.delegate(
             session_attributes,
             intent_request['currentIntent']['slots']
         )
 
     if source == 'FulfillmentCodeHook':
-        lamfunc.logger.debug('specificParking req={}'.format(parking_request))
+        lamfunc.logger.debug(
+            'request for specific parking={}'.format(parking_request)
+        )
 
+        # Clear settings from sessionAttributes
         helper.try_ex(lambda: session_attributes.pop('currentParkingRequest'))
 
         # Keep track of what was the last parking lot the user requested
         # information for.
-        session_attributes['lastConfirmedParkingRequest'] = parking_request
+        session_attributes['lastParkingRequest'] = parking_request
 
         return response.close(
             session_attributes,
@@ -116,6 +122,115 @@ def specific_parking(intent_request):
                 'contentType': 'PlainText',
                 'content': 'return parking information about {}'
                            .format(parking_lot)
+            }
+        )
+
+    raise Exception('Error fulfilling SpecificParking intent')
+
+
+def get_directions(intent_request):
+    """Fulfillment for giving the user information regarding a specified lot"""
+
+    # Check for any errors with the current slots
+    parking_lot = helper.try_ex(
+        lambda: intent_request['currentIntent']['slots']['ParkingLot']
+    )
+
+    # Use of sessionAttributes to retrieve information that can be used to
+    # guide conversation. Session attributes are pieces of information that the
+    # user has provided to the chatbot either in a previous intent or the
+    # current one.
+    if intent_request['sessionAttributes'] is not None:
+        session_attributes = intent_request['sessionAttributes']
+    else:
+        session_attributes = {}
+
+    # Check for a previous parking request the user had made.
+    last_parking_req = helper.try_ex(
+        lambda: session_attributes['lastParkingRequest']
+    )
+    if last_parking_req:
+        last_parking_req = json.loads(last_parking_req)
+
+    # Load slot value history for parking lots
+    parking_request = json.dumps({
+        'ParkingRequest': 'Directions',
+        'ParkingLot': parking_lot
+    })
+
+    # Track current parking request.
+    session_attributes['currentParkingRequest'] = parking_request
+
+    source = intent_request['invocationSource']
+
+    if source == 'DialogCodeHook':
+        # Called on each user input until intent has been fulfilled.
+
+        # Check and validate the slots that have been specified.
+        validation_result = helper.validate_parking_lot(
+                                intent_request['currentIntent']['slots']
+                            )
+        if not validation_result['isValid']:
+            # If invalid, re-elicit for the slot values.
+            slots = intent_request['currentIntent']['slots']
+            slots[validation_result['violatedSlot']] = None
+
+            return response.elicit_slot(
+                session_attributes,
+                intent_request['currentIntent']['name'],
+                slots,
+                validation_result['violatedSlot'],
+                validation_result['message']
+            )
+
+        if parking_lot is None and last_parking_req:
+            # If the slot empty and there is a parking lot already stored
+            # from a previous conversation, then use that parking value
+            lamfunc.logger.debug(
+                'request for lot directions={}'.format(parking_request)
+            )
+            helper.try_ex(
+                lambda: session_attributes.pop('currentParkingRequest')
+            )
+            helper.try_ex(
+                lambda: session_attributes.pop('lastParkingRequest')
+            )
+
+            return response.close(
+                session_attributes,
+                'Fulfilled',
+                {
+                    'contentType': 'PlainText',
+                    'content': 'return directions for lot {}'.format(
+                        last_parking_req['ParkingLot']
+                    )
+                }
+            )
+
+        # Otherwise, redirect to Amazon Lex to obtain slot values.
+        return response.delegate(
+            session_attributes,
+            intent_request['currentIntent']['slots']
+        )
+
+    if source == 'FulfillmentCodeHook':
+        lamfunc.logger.debug(
+            'request for lot directions={}'.format(parking_request)
+        )
+
+        # Clear settings from sessionAttributes
+        helper.try_ex(lambda: session_attributes.pop('currentParkingRequest'))
+
+        # Keep track of what was the last parking lot the user requested
+        # information for.
+        session_attributes['lastParkingRequest'] = parking_request
+
+        return response.close(
+            session_attributes,
+            'Fulfilled',
+            {
+                'contentType': 'PlainText',
+                'content': 'return directions to {}'.format(parking_lot)
             }
         )
 
