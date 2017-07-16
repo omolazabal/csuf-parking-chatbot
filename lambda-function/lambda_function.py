@@ -28,6 +28,9 @@ def dispatch(intent_request):
     if intent_name == 'SpecificParking':
         return fulfillment.specific_parking(intent_request)
 
+    if intent_name == 'GetDirections':
+        return fulfillment.get_directions(intent_request)
+
     raise Exception('Intent with name {} not supported'.format(intent_name))
 
 
