@@ -87,7 +87,7 @@ def scrape_data():
     """
     url = 'https://parking.fullerton.edu/parkinglotcounts/mobile.aspx'
     source = urllib.request.urlopen(url)
-    soup_obj = bs.BeautifulSoup(source, 'lxml')
+    soup_obj = bs.BeautifulSoup(source, 'html.parser')
 
     table = soup_obj.table
     table_rows = table.find_all('tr')
