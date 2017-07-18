@@ -48,7 +48,7 @@ def validate_parking_lot(slots):
             False,
             'ParkingLot',
             'I do not know of any information regarding {}, try a different '
-            'parking lot.'.format(parking_lot)
+            'parking space.'.format(parking_lot)
         )
 
     return {'isValid': True}
