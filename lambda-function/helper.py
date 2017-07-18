@@ -60,9 +60,9 @@ def validate_parking_lot(slots):
 
 def scrape_data():
     """A dictionary will be returned. It contains information about the various
-    parking spaces at csuf.
+    parking locations at csuf.
 
-    Parking spaces currently used in parking_lots:
+    Parking locations currently used in parking_lots:
         Nutwood Structure
         State College Structure
         Eastside Structure
@@ -70,14 +70,14 @@ def scrape_data():
         EvFree Church
         Brea Mall
 
-    Available information for the parking spaces:
+    Available information for the parking locaitons:
         Total Spaces
         Date (last date the information was updated)
         Time (last time the information was updated)
         Available Spaces
 
     To access information about a specific parking lot enter the full name of
-    the parking space (the ones listed above) with camel case as the first
+    the parking location (the ones listed above) with camel case as the first
     dimension, then enter the information you want to access (the ones listed
     above) with camel case. For example:
 
