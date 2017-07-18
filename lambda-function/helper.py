@@ -1,6 +1,8 @@
 
 """Helper functions to assist in checking for errors and for specific cases"""
 
+import parkingdata
+
 
 def try_ex(func):
     """Call passed in function in try block. If KeyError is encountered return
@@ -18,11 +20,11 @@ def is_valid_lot(parking_lot):
     """Check if passed parking lot is valid"""
 
     valid_lots = [
-        'evfree church', 'state college structure', 'lot a and g',
-        'eastside structure', 'nutwood structure', 'brea mall'
+        'EvFree Church', 'State College Structure', 'Lot A & G',
+        'Eastside Structure', 'Nutwood Structure', 'Brea Mall'
     ]
 
-    return parking_lot.lower() in valid_lots
+    return parking_lot in valid_lots
 
 
 def build_validation_result(is_valid, violated_slot, message_content):
@@ -52,3 +54,15 @@ def validate_parking_lot(slots):
         )
 
     return {'isValid': True}
+
+
+def get_data(parking_lot, request):
+    """Returns requested data about parking lot.
+    NOTE: parking_lot should be valid before calling this function
+    """
+
+    try:
+        parking_lot_data = parkingdata.scrape_data()
+        return parking_lot_data[parking_lot.strip(' ')][request]
+    except:
+        raise Exception('Error finding parking lot data')
