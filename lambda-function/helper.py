@@ -18,8 +18,8 @@ def is_valid_lot(parking_lot):
     """Check if passed parking lot is valid"""
 
     valid_lots = [
-        'evfree church', 'state college', 'a and g', 'g',
-        'a', 'eastside', 'nutwood', 'brea mall', 'all'
+        'evfree church', 'state college structure', 'lot a and g',
+        'eastside structure', 'nutwood structure', 'brea mall'
     ]
 
     return parking_lot.lower() in valid_lots
