@@ -75,6 +75,7 @@ def scrape_data():
         Date (last date the information was updated)
         Time (last time the information was updated)
         Available Spaces
+        Directions
 
     To access information about a specific parking lot enter the full name of
     the parking location (the ones listed above) with camel case as the first
@@ -125,5 +126,12 @@ def scrape_data():
         parking_lots[lot_data[0]]['Date'] = lot_data[3]
         parking_lots[lot_data[0]]['Time'] = lot_data[4]
         parking_lots[lot_data[0]]['AvailableSpaces'] = lot_data[5]
+
+    parking_lots['NutwoodStructure']['Directions'] = 'https://goo.gl/af6i12'
+    parking_lots['StateCollegeStructure']['Directions'] = 'https://goo.gl/KzsZqZ'
+    parking_lots['EastsideStructure']['Directions'] = 'https://goo.gl/U14f9D'
+    parking_lots['LotA&G']['Directions'] = 'https://goo.gl/tc82nc'
+    parking_lots['EvFreeChurch']['Directions'] = 'https://goo.gl/qTh7fL'
+    parking_lots['BreaMall']['Directions'] = 'https://goo.gl/RKnN5k'
 
     return parking_lots
