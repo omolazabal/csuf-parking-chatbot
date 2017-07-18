@@ -148,14 +148,28 @@ def specific_parking(intent_request):
         # information for.
         session_attributes['lastParkingRequest'] = parking_request
 
+        # Obtain and format data into message
+        parking_data = helper.scrape_data()
+        lot_name = parking_lot.replace(' ', '')
+
+        if parking_data[lot_name]['AvailableSpaces'] == 'Closed':
+            message = '{} is currently close. It is open on {}.'.format(
+                parking_lot,
+                parking_data[lot_name]['Date']
+            )
+        else:
+            message = "{} currently has {} available parking spaces.".format(
+                parking_lot,
+                parking_data[lot_name]['AvailableSpaces']
+            )
+
         # End the intent.
         return response.close(
             session_attributes,
             'Fulfilled',
             {
                 'contentType': 'PlainText',
-                'content': 'return parking information about {}'
-                           .format(parking_lot)
+                'content': message
             }
         )
 
