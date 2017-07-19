@@ -72,12 +72,26 @@ def list_parking(intent_request):
     source = intent_request['invocationSource']
 
     if source == 'FulfillmentCodeHook':
+        # Obtain data and format into message
+        parking_data = helper.scrape_data()
+        message = 'Here\'s list of CSUF parking locations: ' \
+                  'Nutwood Structure ({}), State College Structure({}), ' \
+                  'Eastside Structure ({}), Lot A & G ({}), ' \
+                  'EvFree Church ({}), Brea Mall ({})'.format(
+                      parking_data['NutwoodStructure']['AvailableSpaces'],
+                      parking_data['StateCollegeStructure']['AvailableSpaces'],
+                      parking_data['EastsideStructure']['AvailableSpaces'],
+                      parking_data['LotA&G']['AvailableSpaces'],
+                      parking_data['EvFreeChurch']['AvailableSpaces'],
+                      parking_data['BreaMall']['AvailableSpaces']
+                  )
+
         return response.close(
             intent_request['sessionAttributes'],
             'Fulfilled',
             {
                 'contentType': 'PlainText',
-                'content': 'return list of available parking lots'
+                'content': message
             }
         )
 
