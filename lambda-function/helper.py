@@ -4,6 +4,7 @@
 import bs4 as bs
 import urllib.request
 import urllib.parse
+from collections import defaultdict
 
 
 def try_ex(func):
@@ -93,9 +94,14 @@ def scrape_data():
     table = soup_obj.table
     table_rows = table.find_all('tr')
 
-    parking_lots = {}
+    parking_lots = defaultdict(dict)
+    directions = [
+        'https://goo.gl/af6i12', 'https://goo.gl/KzsZqZ',
+        'https://goo.gl/U14f9D', 'https://goo.gl/tc82nc',
+        'https://goo.gl/qTh7fL', 'https://goo.gl/RKnN5k'
+    ]
 
-    for tr in table_rows:
+    for tr, direction in zip(table_rows, directions):
         td = tr.find_all('td')
 
         # Returns a list containing the data on the left column (row[0]) and
@@ -121,17 +127,10 @@ def scrape_data():
         lot_data.append(row[1].split('\n')[0])
 
         # Organize the data into the parking_lots dictionary.
-        parking_lots[lot_data[0]] = {}
         parking_lots[lot_data[0]]['TotalSpaces'] = lot_data[2]
         parking_lots[lot_data[0]]['Date'] = lot_data[3]
         parking_lots[lot_data[0]]['Time'] = lot_data[4]
         parking_lots[lot_data[0]]['AvailableSpaces'] = lot_data[5]
-
-    parking_lots['NutwoodStructure']['Directions'] = 'https://goo.gl/af6i12'
-    parking_lots['StateCollegeStructure']['Directions'] = 'https://goo.gl/KzsZqZ'
-    parking_lots['EastsideStructure']['Directions'] = 'https://goo.gl/U14f9D'
-    parking_lots['LotA&G']['Directions'] = 'https://goo.gl/tc82nc'
-    parking_lots['EvFreeChurch']['Directions'] = 'https://goo.gl/qTh7fL'
-    parking_lots['BreaMall']['Directions'] = 'https://goo.gl/RKnN5k'
+        parking_lots[lot_data[0]]['Directions'] = direction
 
     return parking_lots
