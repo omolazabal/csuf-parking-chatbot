@@ -24,7 +24,7 @@ def is_valid_lot(parking_lot):
 
     valid_lots = [
         'EvFree Church', 'State College Structure', 'Lot A & G',
-        'Eastside Structure', 'Nutwood Structure', 'Brea Mall'
+        'Eastside Structure', 'Nutwood Structure', 'Brea Mall', 'all'
     ]
 
     return parking_lot in valid_lots
@@ -94,6 +94,9 @@ def scrape_data():
     table = soup_obj.table
     table_rows = table.find_all('tr')
 
+    data_type = ['TotalSpaces', 'Date', 'Time',
+                 'AvailableSpaces', 'Directions']
+
     parking_lots = defaultdict(dict)
     directions = [
         'https://goo.gl/af6i12', 'https://goo.gl/KzsZqZ',
@@ -127,10 +130,76 @@ def scrape_data():
         lot_data.append(row[1].split('\n')[0])
 
         # Organize the data into the parking_lots dictionary.
-        parking_lots[lot_data[0]]['TotalSpaces'] = lot_data[2]
-        parking_lots[lot_data[0]]['Date'] = lot_data[3]
-        parking_lots[lot_data[0]]['Time'] = lot_data[4]
-        parking_lots[lot_data[0]]['AvailableSpaces'] = lot_data[5]
-        parking_lots[lot_data[0]]['Directions'] = direction
+        for type_, index in zip(data_type, range(2, 7)):
+            if index == 6:
+                parking_lots[lot_data[0]][type_] = direction
+            else:
+                parking_lots[lot_data[0]][type_] = lot_data[index]
 
     return parking_lots
+
+
+def get_lot_names():
+    return [
+        'Nutwood Structure', 'State College Structure',
+        'Eastside Structure', 'Lot A & G',
+        'EvFree Church', 'Brea Mall'
+        ]
+
+
+def get_available_lots():
+    """Returns a dict containgin two lists; one that contains closed parking
+    lots, another that contains open parking lots
+    """
+
+    parking_data = scrape_data()
+    lot_names = get_lot_names()
+    closed_lots = []
+    avail_lots = []
+
+    for name in lot_names:
+        strip_name = name.replace(' ', '')
+        if parking_data[strip_name]['AvailableSpaces'] == 'Closed':
+            closed_lots.append(name)
+        else:
+            avail_lots.append(name)
+
+    return {'ClosedLots': closed_lots, 'AvailableLots': avail_lots}
+
+
+def get_optimal_lots():
+    """Returns a dictionary that has the parking data sorted.
+
+    Example:
+    sorted_parking['First']['Name']
+    returns the name of the parking lot with the most parking spaces
+
+    sorted_parking['Second']['AvailableSpaces']
+    returns the available spaces for the parking with the second most parking
+    spaces.
+    """
+
+    parking_lots = scrape_data()
+    sorted_lots = defaultdict(dict)
+
+    positions = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth']
+    lot_names = get_lot_names
+
+    # Sort the lots.
+    for position in positions:
+        max_num = '0'
+        for name in lot_names:
+            strip_name = name.replace(' ', '')
+
+            if parking_lots[strip_name]['AvailableSpaces'] == 'Closed':
+                parking_lots[strip_name]['AvailableSpaces'] = '0'
+
+            if parking_lots[strip_name]['AvailableSpaces'] >= max_num:
+                max_num = parking_lots[strip_name]['AvailableSpaces']
+                optimal_lot = name
+
+        lot_names.remove(optimal_lot)
+        sorted_lots[position]['Name'] = optimal_lot
+        sorted_lots[positions]['AvailableSpaces'] = max_num
+
+    return sorted_lots
