@@ -11,7 +11,8 @@ def optimal_parking(intent_request):
     """Fulfillment for finding the optimal parking lot to park at."""
 
     # Find optimal parking lot
-    parking_lot = "best parking lot"
+    sorted_lots = helper.get_optimal_lots()
+    parking_lot = sorted_lots['First']['Name']
 
     # Use of sessionAttributes to store information that can be used to guide
     # conversation. Session attributes are pieces of information that the user
@@ -54,7 +55,11 @@ def optimal_parking(intent_request):
             'Fulfilled',
             {
                 'contentType': 'PlainText',
-                'content': 'best parking location: {}'.format(parking_lot)
+                'content': '{} is the best place to park right now. It has '
+                           '{} available parking spaces.'.format(
+                               parking_lot,
+                               sorted_lots['First']['AvailableSpaces']
+                            )
             }
         )
 
