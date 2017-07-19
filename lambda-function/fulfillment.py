@@ -72,6 +72,8 @@ def list_parking(intent_request):
     source = intent_request['invocationSource']
 
     if source == 'FulfillmentCodeHook':
+        lamfunc.logger.debug('request for lot list')
+
         # Obtain data and format into message
         parking_data = helper.scrape_data()
         message = 'Here\'s list of CSUF parking locations: ' \
@@ -283,13 +285,21 @@ def get_directions(intent_request):
         helper.try_ex(lambda: session_attributes.pop('currentParkingRequest'))
         helper.try_ex(lambda: session_attributes.pop('lastParkingRequest'))
 
+        # Obtain and format data into message
+        parking_data = helper.scrape_data()
+        lot_name = parking_lot.replace(' ', '')
+        message = 'Here are the directions to {}: {}'.format(
+                  parking_lot,
+                  parking_data[lot_name]['Directions']
+        )
+
         # End the intent.
         return response.close(
             session_attributes,
             'Fulfilled',
             {
                 'contentType': 'PlainText',
-                'content': 'return directions to {}'.format(parking_lot)
+                'content': message
             }
         )
 
