@@ -174,7 +174,7 @@ def get_optimal_lots():
     sorted_parking['First']['Name']
     returns the name of the parking lot with the most parking spaces
 
-    sorted_parking['Second']['AvailableSpaces']
+    sorted_lots['Second']['AvailableSpaces']
     returns the available spaces for the parking with the second most parking
     spaces.
     """
@@ -183,23 +183,23 @@ def get_optimal_lots():
     sorted_lots = defaultdict(dict)
 
     positions = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth']
-    lot_names = get_lot_names
+    lot_names = get_lot_names()
 
     # Sort the lots.
     for position in positions:
-        max_num = '0'
+        max_num = 0
         for name in lot_names:
             strip_name = name.replace(' ', '')
 
             if parking_lots[strip_name]['AvailableSpaces'] == 'Closed':
-                parking_lots[strip_name]['AvailableSpaces'] = '0'
+                parking_lots[strip_name]['AvailableSpaces'] = 0
 
-            if parking_lots[strip_name]['AvailableSpaces'] >= max_num:
-                max_num = parking_lots[strip_name]['AvailableSpaces']
+            if int(parking_lots[strip_name]['AvailableSpaces']) >= max_num:
+                max_num = int(parking_lots[strip_name]['AvailableSpaces'])
                 optimal_lot = name
 
         lot_names.remove(optimal_lot)
         sorted_lots[position]['Name'] = optimal_lot
-        sorted_lots[positions]['AvailableSpaces'] = max_num
+        sorted_lots[position]['AvailableSpaces'] = str(max_num)
 
     return sorted_lots
