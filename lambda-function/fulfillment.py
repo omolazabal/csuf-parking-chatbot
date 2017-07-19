@@ -75,18 +75,28 @@ def list_parking(intent_request):
         lamfunc.logger.debug('request for lot list')
 
         # Obtain data and format into message
-        parking_data = helper.scrape_data()
-        message = 'Here\'s list of CSUF parking locations: ' \
-                  'Nutwood Structure ({}), State College Structure({}), ' \
-                  'Eastside Structure ({}), Lot A & G ({}), ' \
-                  'EvFree Church ({}), Brea Mall ({})'.format(
-                      parking_data['NutwoodStructure']['AvailableSpaces'],
-                      parking_data['StateCollegeStructure']['AvailableSpaces'],
-                      parking_data['EastsideStructure']['AvailableSpaces'],
-                      parking_data['LotA&G']['AvailableSpaces'],
-                      parking_data['EvFreeChurch']['AvailableSpaces'],
-                      parking_data['BreaMall']['AvailableSpaces']
-                  )
+        lot_list = helper.get_available_lots()
+
+        if not lot_list['ClosedLots']:
+            available_lots = lot_list['AvailableLots'][0]
+            del lot_list['AvailableLots'][0]
+            for lot in lot_list['AvailableLots']:
+                available_lots += (', ' + lot)
+            message = 'All parking locations are open today! You can park' \
+                      ' at {}.'.format(available_lots)
+        else:
+            available_lots = lot_list['AvailableLots'][0]
+            del lot_list['AvailableLots'][0]
+            for lot in lot_list['AvailableLots']:
+                available_lots += (', ' + lot)
+
+            closed_lots = lot_list['ClosedLots'][0]
+            del lot_list['ClosedLots'][0]
+            for lot in lot_list['ClosedLots']:
+                closed_lots += (', ' + lot)
+
+            message = 'Today you can park at: {}. You cannot park at: ' \
+                      '{}.'.format(available_lots, closed_lots)
 
         return response.close(
             intent_request['sessionAttributes'],
@@ -168,7 +178,19 @@ def specific_parking(intent_request):
         parking_data = helper.scrape_data()
         lot_name = parking_lot.replace(' ', '')
 
-        if parking_data[lot_name]['AvailableSpaces'] == 'Closed':
+        if lot_name == 'all':
+            message = 'Here are the available spaces for all locations: ' \
+                  'Nutwood Structure ({}), State College Structure({}), ' \
+                  'Eastside Structure ({}), Lot A & G ({}), ' \
+                  'EvFree Church ({}), Brea Mall ({})'.format(
+                      parking_data['NutwoodStructure']['AvailableSpaces'],
+                      parking_data['StateCollegeStructure']['AvailableSpaces'],
+                      parking_data['EastsideStructure']['AvailableSpaces'],
+                      parking_data['LotA&G']['AvailableSpaces'],
+                      parking_data['EvFreeChurch']['AvailableSpaces'],
+                      parking_data['BreaMall']['AvailableSpaces']
+                  )
+        elif parking_data[lot_name]['AvailableSpaces'] == 'Closed':
             message = '{} is currently close. It is open on {}.'.format(
                 parking_lot,
                 parking_data[lot_name]['Date']
@@ -288,10 +310,25 @@ def get_directions(intent_request):
         # Obtain and format data into message
         parking_data = helper.scrape_data()
         lot_name = parking_lot.replace(' ', '')
-        message = 'Here are the directions to {}: {}'.format(
+
+        if lot_name == 'all':
+            message = 'Here are the directions for all locations: ' \
+                  'Nutwood Structure ({}), State College Structure({}), ' \
+                  'Eastside Structure ({}), Lot A & G ({}), ' \
+                  'EvFree Church ({}), Brea Mall ({})'.format(
+                      parking_data['NutwoodStructure']['Directions'],
+                      parking_data['StateCollegeStructure']['Directions'],
+                      parking_data['EastsideStructure']['Directions'],
+                      parking_data['LotA&G']['Directions'],
+                      parking_data['EvFreeChurch']['Directions'],
+                      parking_data['BreaMall']['Directions']
+                  )
+
+        else:
+            message = 'Here are the directions to {}: {}'.format(
                   parking_lot,
                   parking_data[lot_name]['Directions']
-        )
+            )
 
         # End the intent.
         return response.close(
