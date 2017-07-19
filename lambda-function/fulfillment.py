@@ -85,7 +85,7 @@ def list_parking(intent_request):
             'Fulfilled',
             {
                 'contentType': 'PlainText',
-                'content': msg.list_lots_msg()
+                'content': helper.build_list_lot_msg()
             }
         )
 
@@ -162,7 +162,7 @@ def specific_parking(intent_request):
             'Fulfilled',
             {
                 'contentType': 'PlainText',
-                'content': msg.specific_parking_msg(parking_lot)
+                'content': helper.build_specific_parking_msg(parking_lot)
             }
         )
 
@@ -268,7 +268,7 @@ def get_directions(intent_request):
             'Fulfilled',
             {
                 'contentType': 'PlainText',
-                'content': msg.directions_msg(parking_lot)
+                'content': helper.build_directions_msg(parking_lot)
             }
         )
 
