@@ -298,11 +298,10 @@ def greeting(intent_request):
             'Hey there! I can assist you with parking. Try asking me "Where '
             'should I park today?" or "Give me directions to State College '
             'Structure."',
-            'Hello there! Need help parking? I can help you with that.',
-            'How\'s it going?'
+            'Hello there! Need help parking? I can help you with that.'
         ]
 
-        index = randint(0, 2)  # Choose random message.
+        index = randint(0, 1)  # Choose random message.
 
         return response.close(
             intent_request['sessionAttributes'],
