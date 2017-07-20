@@ -5,6 +5,7 @@ import bs4 as bs
 import urllib.request
 import urllib.parse
 from collections import defaultdict
+import difflib
 
 
 def try_ex(func):
@@ -20,14 +21,85 @@ def try_ex(func):
 
 
 def is_valid_lot(parking_lot):
-    """Check if passed parking lot is valid"""
+    """Check if passed parking lot is valid. Uses difflib to check the ratio.
+    if the raito of the checked word vs the actual word is equal to or above
+    the limit, then the checked word is converted to the actual word.
+
+    Returns a dictionary containing whether the checked lot is valid and the
+    corrected spelling of the word."""
+
+    if parking_lot is None:
+        # If no parking lot is given, return
+        return {'isValid': True, 'newLotName': None}
+
+    parking_lot = parking_lot.lower()
 
     valid_lots = [
         'EvFree Church', 'State College Structure', 'Lot A & G',
-        'Eastside Structure', 'Nutwood Structure', 'Brea Mall', 'all'
+        'Eastside Structure', 'Nutwood Structure', 'Brea Mall', 'all',
+        'everywhere'
     ]
 
-    return parking_lot in valid_lots
+    max_ratio = 0
+    is_valid = False
+    lot = None
+    limit = 0.6
+
+    for valid_lot in valid_lots:
+        # Go through each lot and compare the ratios. If the ratio is high
+        # enough then save that lot
+        ratio = difflib.SequenceMatcher(None, valid_lot.lower(),
+                                        parking_lot).ratio()
+        if valid_lot == 'Nutwood Structure':
+            if ratio >= limit and ratio >= max_ratio:
+                is_valid = True
+                lot = valid_lot
+                max_ratio = ratio
+
+            ratio = difflib.SequenceMatcher(None, 'nutwood',
+                                            parking_lot).ratio()
+            if ratio >= limit and ratio >= max_ratio:
+                is_valid = True
+                lot = valid_lot
+                max_ratio = ratio
+
+        elif valid_lot == 'Lot A & G':
+            if ratio >= limit and ratio >= max_ratio:
+                is_valid = True
+                lot = valid_lot
+                max_ratio = ratio
+
+            ratio = difflib.SequenceMatcher(None, 'lot a', parking_lot).ratio()
+            if ratio >= limit and ratio >= max_ratio:
+                is_valid = True
+                lot = valid_lot
+                max_ratio = ratio
+
+            ratio = difflib.SequenceMatcher(None, 'a', parking_lot).ratio()
+            if ratio >= limit and ratio >= max_ratio:
+                is_valid = True
+                lot = valid_lot
+                max_ratio = ratio
+
+            ratio = difflib.SequenceMatcher(None, 'g', parking_lot).ratio()
+            if ratio >= limit and ratio >= max_ratio:
+                is_valid = True
+                lot = valid_lot
+                max_ratio = ratio
+
+            ratio = difflib.SequenceMatcher(None, 'a and g',
+                                            parking_lot).ratio()
+            if ratio >= limit and ratio >= max_ratio:
+                is_valid = True
+                lot = valid_lot
+                max_ratio = ratio
+
+        elif ratio >= limit and ratio >= max_ratio:
+            is_valid = True
+            lot = valid_lot
+            max_ratio = ratio
+
+    return {'isValid': is_valid, 'newLotName': lot}
 
 
 def build_validation_result(is_valid, violated_slot, message_content):
@@ -47,8 +119,9 @@ def validate_parking_lot(slots):
     """Checks whether the user's requested lot is valid"""
 
     parking_lot = try_ex(lambda: slots['ParkingLot'])
+    validation = is_valid_lot(parking_lot)
 
-    if parking_lot and not is_valid_lot(parking_lot):
+    if parking_lot and not validation['isValid']:
         return build_validation_result(
             False,
             'ParkingLot',
@@ -56,7 +129,9 @@ def validate_parking_lot(slots):
             'parking location.'.format(parking_lot)
         )
 
-    return {'isValid': True}
+    return {
+        'isValid': True,
+        'newLotName': validation['newLotName']}
 
 
 def scrape_data():
@@ -206,9 +281,12 @@ def get_optimal_lots():
 
 
 def build_list_lot_msg():
+    """"Creates the fulfillment message for the list intent."""
+
     lot_list = get_available_lots()
 
     if not lot_list['ClosedLots']:
+        # If there are no closed lots, create the message with only open lots.
         available_lots = lot_list['AvailableLots'][0]
         del lot_list['AvailableLots'][0]
         for lot in lot_list['AvailableLots']:
@@ -232,10 +310,12 @@ def build_list_lot_msg():
 
 
 def build_specific_parking_msg(parking_lot):
+    """"Creates the fulfillment message for the specific parking intent."""
+
     parking_data = scrape_data()
     lot_name = parking_lot.replace(' ', '')
 
-    if lot_name == 'all':
+    if lot_name == 'all' or lot_name == 'everywhere':
         return 'Here are the available spaces for all locations: ' \
                'Nutwood Structure ({}), State College Structure({}), ' \
                'Eastside Structure ({}), Lot A & G ({}), ' \
@@ -260,10 +340,12 @@ def build_specific_parking_msg(parking_lot):
 
 
 def build_directions_msg(parking_lot):
+    """"Creates the fulfillment message for the directions intent."""
+
     parking_data = scrape_data()
     lot_name = parking_lot.replace(' ', '')
 
-    if lot_name == 'all':
+    if lot_name == 'all' or lot_name == 'everywhere':
         return 'Here are the directions for all locations: ' \
                'Nutwood Structure ({}), State College Structure({}), ' \
                'Eastside Structure ({}), Lot A & G ({}), ' \
@@ -280,4 +362,3 @@ def build_directions_msg(parking_lot):
                     parking_lot,
                     parking_data[lot_name]['Directions']
         )
-
