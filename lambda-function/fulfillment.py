@@ -4,7 +4,6 @@
 import json
 import response
 import helper
-import message as msg
 import lambda_function as lamfunc
 
 
@@ -138,6 +137,9 @@ def specific_parking(intent_request):
                 validation_result['message']
             )
 
+        intent_request['currentIntent']['slots']['ParkingLot'] \
+            = validation_result['newLotName']
+
         # Redirect to Amazon Lex to obtain slot values.
         return response.delegate(
             session_attributes,
@@ -220,6 +222,9 @@ def get_directions(intent_request):
                 validation_result['message']
             )
 
+        intent_request['currentIntent']['slots']['ParkingLot'] \
+            = validation_result['newLotName']
+
         if parking_lot is None and last_parking_req:
             # If the slot empty and there is a parking lot already stored
             # from a previous conversation, then use that parking value
@@ -241,7 +246,7 @@ def get_directions(intent_request):
                 'Fulfilled',
                 {
                     'contentType': 'PlainText',
-                    'content': 'return directions to {}'.format(
+                    'content': helper.build_directions_msg(
                         last_parking_req['ParkingLot']
                     )
                 }
