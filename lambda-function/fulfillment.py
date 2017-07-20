@@ -5,6 +5,7 @@ import json
 import response
 import helper
 import lambda_function as lamfunc
+from random import randint
 
 
 def optimal_parking(intent_request):
@@ -278,3 +279,39 @@ def get_directions(intent_request):
         )
 
     raise Exception('Error fulfilling SpecificParking intent')
+
+
+def greeting(intent_request):
+    """Fulfillment for greeting the user."""
+
+    # Clear session attributes to avoid confusion
+    if intent_request['sessionAttributes'] is not None:
+        session_attributes = intent_request['sessionAttributes']
+        helper.try_ex(lambda: session_attributes.pop('lastParkingRequest'))
+
+    source = intent_request['invocationSource']
+
+    if source == 'FulfillmentCodeHook':
+        lamfunc.logger.debug('greet the user')
+
+        message = [
+            'Hey there! I can assist you with parking. Try asking me "Where '
+            'should I park today?" or "Give me directions to State College "'
+            'Structure."',
+            'Hello there! Need help parking? I can help you with that.',
+            'Hi, wanna be friends? I can tell you where the best place to park'
+            'is'
+        ]
+
+        index = randint(0, 2)  # Choose random message.
+
+        return response.close(
+            intent_request['sessionAttributes'],
+            'Fulfilled',
+            {
+                'contentType': 'PlainText',
+                'content': message[index]
+            }
+        )
+
+    raise Exception('Error fulfilling OptimalParking intent')
