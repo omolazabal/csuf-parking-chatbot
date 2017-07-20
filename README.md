@@ -8,13 +8,12 @@ I decided to go with AWS's Lex to make the chatbot. I chose Lex because I have s
 
 Enjoy!
 
-# Demo (note that the reponses are place-holders): #
+# Demos: #
 
-### Remembering session attributes ###
-![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/sess-attrib.gif)
+Miscelaneous                                                                                      | Remembering Session Attributes                                                                       | Obtaining Slot Values
+:------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------:
+![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-misc.gif) | ![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-opt-rem.gif) | ![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-get-vals.gif)
 
-### Obtaining slot values ###
-![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/get-slot-val.gif)
-
-### Elicit for valid slot values ###
-![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/elicit-values.gif)
+Miscelaneous                                                                                      | Obtaining Valid Values                                                                                 | Undertsanding Spelling Errors
+:------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------:
+![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-misc.gif) | ![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-re-elicit.gif) | ![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-autocorrect.gif)
