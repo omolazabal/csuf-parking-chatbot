@@ -34,6 +34,12 @@ def dispatch(intent_request):
     if intent_name == 'Greeting':
         return fulfillment.greeting(intent_request)
 
+    if intent_name == 'Closing':
+        return fulfillment.greeting(intent_request)
+
+    if intent_name == 'Joke':
+        return fulfillment.greeting(intent_request)
+
     raise Exception('Intent with name {} not supported'.format(intent_name))
 
 
