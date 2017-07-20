@@ -31,6 +31,9 @@ def dispatch(intent_request):
     if intent_name == 'GetDirections':
         return fulfillment.get_directions(intent_request)
 
+    if intent_name == 'Greeting':
+        return fulfillment.greeting(intent_request)
+
     raise Exception('Intent with name {} not supported'.format(intent_name))
 
 
