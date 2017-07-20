@@ -296,14 +296,82 @@ def greeting(intent_request):
 
         message = [
             'Hey there! I can assist you with parking. Try asking me "Where '
-            'should I park today?" or "Give me directions to State College "'
+            'should I park today?" or "Give me directions to State College '
             'Structure."',
             'Hello there! Need help parking? I can help you with that.',
-            'Hi, wanna be friends? I can tell you where the best place to park'
-            'is'
+            'How\'s it going?'
         ]
 
         index = randint(0, 2)  # Choose random message.
+
+        return response.close(
+            intent_request['sessionAttributes'],
+            'Fulfilled',
+            {
+                'contentType': 'PlainText',
+                'content': message[index]
+            }
+        )
+
+    raise Exception('Error fulfilling OptimalParking intent')
+
+
+def closing(intent_request):
+    """Fulfillment for closing the conversation with the user."""
+
+    # Clear session attributes to avoid confusion
+    if intent_request['sessionAttributes'] is not None:
+        session_attributes = intent_request['sessionAttributes']
+        helper.try_ex(lambda: session_attributes.pop('lastParkingRequest'))
+
+    source = intent_request['invocationSource']
+
+    if source == 'FulfillmentCodeHook':
+        lamfunc.logger.debug('greet the user')
+
+        message = [
+            'Bye!',
+            'Adios!',
+            'See you later!'
+        ]
+
+        index = randint(0, 2)  # Choose random message.
+
+        return response.close(
+            intent_request['sessionAttributes'],
+            'Fulfilled',
+            {
+                'contentType': 'PlainText',
+                'content': message[index]
+            }
+        )
+
+    raise Exception('Error fulfilling OptimalParking intent')
+
+
+def joke(intent_request):
+    """Fulfillment for telling the user a joke."""
+
+    # Clear session attributes to avoid confusion
+    if intent_request['sessionAttributes'] is not None:
+        session_attributes = intent_request['sessionAttributes']
+        helper.try_ex(lambda: session_attributes.pop('lastParkingRequest'))
+
+    source = intent_request['invocationSource']
+
+    if source == 'FulfillmentCodeHook':
+        lamfunc.logger.debug('greet the user')
+
+        message = [
+            "When is a car not a car? When it turns into a driveway.",
+            "I couldn't figure out how to fasten my seatbelt. Then it "
+            "clicked.",
+            "What do you do when you see a spaceman? Park in it, man.",
+            "I got complimented on my parking today. Someone left a note that "
+            "said PARKING FINE."
+        ]
+
+        index = randint(0, 3)  # Choose random message.
 
         return response.close(
             intent_request['sessionAttributes'],
