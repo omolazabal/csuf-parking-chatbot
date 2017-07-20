@@ -63,6 +63,19 @@ def is_valid_lot(parking_lot):
                 lot = valid_lot
                 max_ratio = ratio
 
+        elif valid_lot == 'State College Structure':
+            if ratio >= limit and ratio >= max_ratio:
+                is_valid = True
+                lot = valid_lot
+                max_ratio = ratio
+
+            ratio = difflib.SequenceMatcher(None, 'state college',
+                                            parking_lot).ratio()
+            if ratio >= limit and ratio >= max_ratio:
+                is_valid = True
+                lot = valid_lot
+                max_ratio = ratio
+
         elif valid_lot == 'Lot A & G':
             if ratio >= limit and ratio >= max_ratio:
                 is_valid = True
