@@ -12,7 +12,7 @@ Enjoy!
 
 Miscelaneous                                                                                      | Remembering Session Attributes                                                                       | Obtaining Slot Values
 :------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------:
-![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-misc.gif) | ![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-opt-rem.gif) | ![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-get-vals.gif)
+![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-misc.gif) | ![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-opt-rem.gif) | ![](https://raw.githubusercontent.com/omolazabal/csuf-parking-chatbot/master/gifs/final-get-vals2.gif)
 
 Understanding Different Utterances                                                                                      | Obtaining Valid Values                                                                                 | Undertsanding Spelling Errors
 :------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------:
