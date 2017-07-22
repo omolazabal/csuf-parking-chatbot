@@ -326,7 +326,7 @@ def closing(intent_request):
     source = intent_request['invocationSource']
 
     if source == 'FulfillmentCodeHook':
-        lamfunc.logger.debug('greet the user')
+        lamfunc.logger.debug('close conversation')
 
         message = [
             'Bye!',
@@ -359,7 +359,7 @@ def joke(intent_request):
     source = intent_request['invocationSource']
 
     if source == 'FulfillmentCodeHook':
-        lamfunc.logger.debug('greet the user')
+        lamfunc.logger.debug('tell user joke')
 
         message = [
             "When is a car not a car? When it turns into a driveway.",
