@@ -56,11 +56,7 @@ def optimal_parking(intent_request):
             'Fulfilled',
             {
                 'contentType': 'PlainText',
-                'content': '{} is the best place to park right now. It has '
-                           '{} available parking spaces.'.format(
-                               parking_lot,
-                               sorted_lots['First']['AvailableSpaces']
-                            )
+                'content': helper.build_optimal_msg(sorted_lots)
             }
         )
 
