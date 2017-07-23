@@ -411,7 +411,7 @@ def build_list_lot_msg():
         for lot in lot_list['ClosedLots']:
             closed_lots += (', ' + lot)
 
-        return 'Today you can park at: {}. You cannot park at: ' \
+        return 'Right now you can park at: {}. You cannot park at: ' \
                '{}.'.format(available_lots, closed_lots)
 
 
