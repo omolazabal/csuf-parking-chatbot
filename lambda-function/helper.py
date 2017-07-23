@@ -360,6 +360,21 @@ def get_optimal_lots():
     return sorted_lots
 
 
+def build_optimal_msg(sorted_lots):
+    """Creates fulfillment message for the list intent"""
+
+    if sorted_lots['First']['AvailableSpaces'] == '0':
+        return 'All parking locations are either full or closed right now. ' \
+               'This includes: Nutwood Structure, State College Structure, ' \
+               'Eastside Structure, Lot A & G, EvFree Church, Brea Mall.'
+
+    return '{} is the best place to park right now. It has {} available ' \
+           'parking spaces.'.format(
+               sorted_lots['First']['Name'],
+               sorted_lots['First']['AvailableSpaces']
+           )
+
+
 def build_list_lot_msg():
     """"Creates the fulfillment message for the list intent."""
 
@@ -382,8 +397,8 @@ def build_list_lot_msg():
         for lot in lot_list['ClosedLots']:
             closed_lots += (', ' + lot)
 
-        return 'All parking locations are unavilable right now. This ' \
-               'includes {}'.format(closed_lots)
+        return 'All parking locations are either full or closed right now. ' \
+               'This includes {}'.format(closed_lots)
 
     else:
         available_lots = lot_list['AvailableLots'][0]
