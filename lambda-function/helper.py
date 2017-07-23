@@ -314,7 +314,7 @@ def get_available_lots():
 
     for name in lot_names:
         strip_name = name.replace(' ', '')
-        if parking_data[strip_name]['AvailableSpaces'] == 'Closed':
+        if parking_data[strip_name]['AvailableSpaces'] in ('Closed', 'FULL'):
             closed_lots.append(name)
         else:
             avail_lots.append(name)
@@ -346,7 +346,7 @@ def get_optimal_lots():
         for name in lot_names:
             strip_name = name.replace(' ', '')
 
-            if parking_lots[strip_name]['AvailableSpaces'] == 'Closed':
+            if parking_lots[strip_name]['AvailableSpaces'] in ('Closed', 'FULL'):
                 parking_lots[strip_name]['AvailableSpaces'] = 0
 
             if int(parking_lots[strip_name]['AvailableSpaces']) >= max_num:
@@ -372,8 +372,19 @@ def build_list_lot_msg():
         for lot in lot_list['AvailableLots']:
             available_lots += (', ' + lot)
 
-        return 'All parking locations are open today! You can park' \
-               ' at {}.'.format(available_lots)
+        return 'All parking locations are open right now! This includes: ' \
+               '{}.'.format(available_lots)
+
+    elif not lot_list['AvailableLots']:
+        # If there are no open lots, create the message with only open lots.
+        closed_lots = lot_list['ClosedLots'][0]
+        del lot_list['ClosedLots'][0]
+        for lot in lot_list['ClosedLots']:
+            closed_lots += (', ' + lot)
+
+        return 'All parking locations are unavilable right now. This ' \
+               'includes {}'.format(closed_lots)
+
     else:
         available_lots = lot_list['AvailableLots'][0]
         del lot_list['AvailableLots'][0]
@@ -412,6 +423,8 @@ def build_specific_parking_msg(parking_lot):
                     parking_lot,
                     parking_data[lot_name]['Date']
                 )
+    elif parking_data[lot_name]['AvailableSpaces'] == 'FULL':
+        return '{} is currently full.'.format(parking_lot)
     else:
         return "{} currently has {} available parking spaces.".format(
                     parking_lot,
