@@ -34,150 +34,63 @@ def is_valid_lot(parking_lot):
 
     parking_lot = parking_lot.lower()
 
+    # Appropriate names of the parking lots
     valid_lots = [
-        'EvFree Church', 'State College Structure', 'Lot A & G',
-        'Eastside Structure', 'Nutwood Structure', 'Brea Mall', 'all',
-        'everywhere'
-    ]
+        'Nutwood Structure', 'State College Structure', 'Eastside Structure',
+        'Lot A & G', 'EvFree Church', 'Brea Mall', 'all', 'everywhere'
+        ]
+
+    # Alternative names for the parking lots
+    lot_alts = {
+        'Nutwood Structure': [
+            'nutwood structure',
+            'nutwood'
+            ],
+        'State College Structure': [
+            'state college structure',
+            'state college'
+            ],
+        'Eastside Structure': [
+            'eastside structure', 'eastside'
+            ],
+        'Lot A & G': [
+            'lot a & g', 'lot g & a', 'lot a',
+            'a', 'g', 'a and g', 'g and a'
+            ],
+        'EvFree Church': [
+            'evfree church',
+            'evfree',
+            'church'
+            ],
+        'Brea Mall': [
+            'brea',
+            'mall'
+            ],
+        'all': ['all'],
+        'everywhere': ['everywhere']
+    }
 
     max_ratio = 0
     is_valid = False
-    lot = None
-    limit = 0.7
+    lot = None  # Holds the corrected name of the lot
+
+    # The threshold that the checked lot vs the actual lot ratio
+    # has to surpass for the checked lot to be corrected to the
+    # actual lot.
+    limit = 0.75
 
     for valid_lot in valid_lots:
         # Go through each lot and compare the ratios. If the ratio is high
         # enough then save that lot
-        ratio = difflib.SequenceMatcher(None, valid_lot.lower(),
-                                        parking_lot).ratio()
-        if valid_lot == 'Nutwood Structure':
+
+        for alt in lot_alts[valid_lot]:
+            # Check the ratio for the current parking lot and the alt names.
+            ratio = difflib.SequenceMatcher(None, alt, parking_lot).ratio()
+
             if ratio >= limit and ratio >= max_ratio:
                 is_valid = True
                 lot = valid_lot
                 max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'nutwood',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-        elif valid_lot == 'State College Structure':
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'state college',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-        elif valid_lot == 'Eastside Structure':
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'eastside',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-        elif valid_lot == 'EvFree Church':
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'evfree',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'church',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-        elif valid_lot == 'Brea Mall':
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'brea',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'mall',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-        elif valid_lot == 'Lot A & G':
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'lot g & a',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'lot a', parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'a', parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'g', parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'a and g',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-            ratio = difflib.SequenceMatcher(None, 'g and a',
-                                            parking_lot).ratio()
-            if ratio >= limit and ratio >= max_ratio:
-                is_valid = True
-                lot = valid_lot
-                max_ratio = ratio
-
-        elif ratio >= limit and ratio >= max_ratio:
-            is_valid = True
-            lot = valid_lot
-            max_ratio = ratio
 
     return {'isValid': is_valid, 'newLotName': lot}
 
@@ -191,8 +104,8 @@ def build_validation_result(is_valid, violated_slot, message_content):
         'message': {
             'contentType': 'PlainText',
             'content': message_content
+            }
         }
-    }
 
 
 def validate_parking_lot(slots):
@@ -207,11 +120,12 @@ def validate_parking_lot(slots):
             'ParkingLot',
             'I do not know of any information regarding {}, try a different '
             'parking location.'.format(parking_lot)
-        )
+            )
 
     return {
         'isValid': True,
-        'newLotName': validation['newLotName']}
+        'newLotName': validation['newLotName']
+        }
 
 
 def scrape_data():
@@ -257,7 +171,7 @@ def scrape_data():
         'https://goo.gl/af6i12', 'https://goo.gl/KzsZqZ',
         'https://goo.gl/U14f9D', 'https://goo.gl/tc82nc',
         'https://goo.gl/qTh7fL', 'https://goo.gl/RKnN5k'
-    ]
+        ]
 
     for tr, direction in zip(table_rows, directions):
         td = tr.find_all('td')
@@ -372,7 +286,7 @@ def build_optimal_msg(sorted_lots):
            'parking spaces.'.format(
                sorted_lots['First']['Name'],
                sorted_lots['First']['AvailableSpaces']
-           )
+               )
 
 
 def build_list_lot_msg():
@@ -432,19 +346,19 @@ def build_specific_parking_msg(parking_lot):
                     parking_data['LotA&G']['AvailableSpaces'],
                     parking_data['EvFreeChurch']['AvailableSpaces'],
                     parking_data['BreaMall']['AvailableSpaces']
-                )
+                    )
     elif parking_data[lot_name]['AvailableSpaces'] == 'Closed':
         return '{} is currently close. It is open on {}.'.format(
                     parking_lot,
                     parking_data[lot_name]['Date']
-                )
+                    )
     elif parking_data[lot_name]['AvailableSpaces'] == 'FULL':
         return '{} is currently full.'.format(parking_lot)
     else:
         return "{} currently has {} available parking spaces.".format(
                     parking_lot,
                     parking_data[lot_name]['AvailableSpaces']
-                )
+                    )
 
 
 def build_directions_msg(parking_lot):
@@ -464,9 +378,9 @@ def build_directions_msg(parking_lot):
                     parking_data['LotA&G']['Directions'],
                     parking_data['EvFreeChurch']['Directions'],
                     parking_data['BreaMall']['Directions']
-                )
+                    )
     else:
         return 'Here are the directions to {}: {}'.format(
                     parking_lot,
                     parking_data[lot_name]['Directions']
-        )
+                    )
