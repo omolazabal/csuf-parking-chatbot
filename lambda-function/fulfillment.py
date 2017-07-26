@@ -28,7 +28,7 @@ def optimal_parking(intent_request):
     parking_request = json.dumps({
         'ParkingRequest': 'OptimalLot',
         'ParkingLot': parking_lot
-    })
+        })
 
     # Track current parking request.
     session_attributes['currentParkingRequest'] = parking_request
@@ -41,7 +41,7 @@ def optimal_parking(intent_request):
         # slots for this intent.
         lamfunc.logger.debug(
             'request for optimal parking={}'.format(parking_request)
-        )
+            )
 
         # Clear settings from sessionAttributes
         helper.try_ex(lambda: session_attributes.pop('currentParkingRequest'))
@@ -53,12 +53,11 @@ def optimal_parking(intent_request):
         # End the intent.
         return response.close(
             intent_request['sessionAttributes'],
-            'Fulfilled',
-            {
+            'Fulfilled', {
                 'contentType': 'PlainText',
                 'content': helper.build_optimal_msg(sorted_lots)
-            }
-        )
+                }
+            )
 
     raise Exception('Error fulfilling OptimalParking intent')
 
@@ -78,12 +77,11 @@ def list_parking(intent_request):
 
         return response.close(
             intent_request['sessionAttributes'],
-            'Fulfilled',
-            {
+            'Fulfilled', {
                 'contentType': 'PlainText',
                 'content': helper.build_list_lot_msg()
-            }
-        )
+                }
+            )
 
     raise Exception('Error fulfilling OptimalParking intent')
 
@@ -94,7 +92,7 @@ def specific_parking(intent_request):
     # Check for any errors with the current slots
     parking_lot = helper.try_ex(
         lambda: intent_request['currentIntent']['slots']['ParkingLot']
-    )
+        )
 
     # Use of sessionAttributes to store information that can be used to guide
     # conversation.
@@ -107,7 +105,7 @@ def specific_parking(intent_request):
     parking_request = json.dumps({
         'ParkingRequest': 'LotAvailability',
         'ParkingLot': parking_lot
-    })
+        })
 
     # Track current parking request.
     session_attributes['currentParkingRequest'] = parking_request
@@ -120,7 +118,7 @@ def specific_parking(intent_request):
         # Check and validate the slots that have been specified.
         validation_result = helper.validate_parking_lot(
                                 intent_request['currentIntent']['slots']
-                            )
+                                )
         if not validation_result['isValid']:
             # If invalid, re-elicit for the slot values.
             slots = intent_request['currentIntent']['slots']
@@ -132,7 +130,7 @@ def specific_parking(intent_request):
                 slots,
                 validation_result['violatedSlot'],
                 validation_result['message']
-            )
+                )
 
         intent_request['currentIntent']['slots']['ParkingLot'] \
             = validation_result['newLotName']
@@ -141,12 +139,12 @@ def specific_parking(intent_request):
         return response.delegate(
             session_attributes,
             intent_request['currentIntent']['slots']
-        )
+            )
 
     if source == 'FulfillmentCodeHook':
         lamfunc.logger.debug(
             'request for specific parking={}'.format(parking_request)
-        )
+            )
 
         # Clear settings from sessionAttributes
         helper.try_ex(lambda: session_attributes.pop('currentParkingRequest'))
@@ -158,12 +156,11 @@ def specific_parking(intent_request):
         # End the intent.
         return response.close(
             session_attributes,
-            'Fulfilled',
-            {
+            'Fulfilled', {
                 'contentType': 'PlainText',
                 'content': helper.build_specific_parking_msg(parking_lot)
-            }
-        )
+                }
+            )
 
     raise Exception('Error fulfilling SpecificParking intent')
 
@@ -174,7 +171,7 @@ def get_directions(intent_request):
     # Check for any errors with the current slots
     parking_lot = helper.try_ex(
         lambda: intent_request['currentIntent']['slots']['ParkingLot']
-    )
+        )
 
     # Use of sessionAttributes to retrieve information that can be used to
     # guide conversation.
@@ -186,7 +183,7 @@ def get_directions(intent_request):
     # Check for a previous parking request the user had made.
     last_parking_req = helper.try_ex(
         lambda: session_attributes['lastParkingRequest']
-    )
+        )
     if last_parking_req:
         last_parking_req = json.loads(last_parking_req)
 
@@ -194,7 +191,7 @@ def get_directions(intent_request):
     parking_request = json.dumps({
         'ParkingRequest': 'Directions',
         'ParkingLot': parking_lot
-    })
+        })
 
     # Track current parking request.
     session_attributes['currentParkingRequest'] = parking_request
@@ -205,7 +202,7 @@ def get_directions(intent_request):
         # Check and validate the slots that have been specified.
         validation_result = helper.validate_parking_lot(
                                 intent_request['currentIntent']['slots']
-                            )
+                                )
         if not validation_result['isValid']:
             # If invalid, re-elicit for the slot values.
             slots = intent_request['currentIntent']['slots']
@@ -217,7 +214,7 @@ def get_directions(intent_request):
                 slots,
                 validation_result['violatedSlot'],
                 validation_result['message']
-            )
+                )
 
         intent_request['currentIntent']['slots']['ParkingLot'] \
             = validation_result['newLotName']
@@ -227,38 +224,37 @@ def get_directions(intent_request):
             # from a previous conversation, then use that parking value
             lamfunc.logger.debug(
                 'request for lot directions={}'.format(parking_request)
-            )
+                )
 
             # Clear settings from sessionsAttributes.
             helper.try_ex(
                 lambda: session_attributes.pop('currentParkingRequest')
-            )
+                )
             helper.try_ex(
                 lambda: session_attributes.pop('lastParkingRequest')
-            )
+                )
 
             # End the intent.
             return response.close(
                 session_attributes,
-                'Fulfilled',
-                {
+                'Fulfilled', {
                     'contentType': 'PlainText',
                     'content': helper.build_directions_msg(
                         last_parking_req['ParkingLot']
-                    )
-                }
-            )
+                        )
+                    }
+                )
 
         # Otherwise, redirect to Amazon Lex to obtain slot values.
         return response.delegate(
             session_attributes,
             intent_request['currentIntent']['slots']
-        )
+            )
 
     if source == 'FulfillmentCodeHook':
         lamfunc.logger.debug(
             'request for lot directions={}'.format(parking_request)
-        )
+            )
 
         # Clear settings from sessionAttributes
         helper.try_ex(lambda: session_attributes.pop('currentParkingRequest'))
@@ -267,12 +263,11 @@ def get_directions(intent_request):
         # End the intent.
         return response.close(
             session_attributes,
-            'Fulfilled',
-            {
+            'Fulfilled', {
                 'contentType': 'PlainText',
                 'content': helper.build_directions_msg(parking_lot)
-            }
-        )
+                }
+            )
 
     raise Exception('Error fulfilling SpecificParking intent')
 
@@ -295,20 +290,19 @@ def greeting(intent_request):
             'should I park today?" or "Give me directions to State College '
             'Structure."',
             'Hello there! Need help parking? I can help you with that.'
-        ]
+            ]
 
         index = randint(0, 1)  # Choose random message.
 
         return response.close(
             intent_request['sessionAttributes'],
-            'Fulfilled',
-            {
+            'Fulfilled', {
                 'contentType': 'PlainText',
                 'content': message[index]
-            }
-        )
+                }
+            )
 
-    raise Exception('Error fulfilling OptimalParking intent')
+    raise Exception('Error fulfilling greeting intent')
 
 
 def closing(intent_request):
@@ -328,20 +322,19 @@ def closing(intent_request):
             'Bye!',
             'Adios!',
             'See you later!'
-        ]
+            ]
 
         index = randint(0, 2)  # Choose random message.
 
         return response.close(
             intent_request['sessionAttributes'],
-            'Fulfilled',
-            {
+            'Fulfilled', {
                 'contentType': 'PlainText',
                 'content': message[index]
-            }
-        )
+                }
+            )
 
-    raise Exception('Error fulfilling OptimalParking intent')
+    raise Exception('Error fulfilling closing intent')
 
 
 def joke(intent_request):
@@ -364,17 +357,16 @@ def joke(intent_request):
             "What do you do when you see a spaceman? Park in it, man.",
             "I got complimented on my parking today. Someone left a note that "
             "said PARKING FINE."
-        ]
+            ]
 
         index = randint(0, 3)  # Choose random message.
 
         return response.close(
             intent_request['sessionAttributes'],
-            'Fulfilled',
-            {
+            'Fulfilled', {
                 'contentType': 'PlainText',
                 'content': message[index]
-            }
-        )
+                }
+            )
 
-    raise Exception('Error fulfilling OptimalParking intent')
+    raise Exception('Error fulfilling joke intent')
