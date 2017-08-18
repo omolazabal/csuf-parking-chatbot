@@ -228,7 +228,7 @@ def get_available_lots():
 
     for name in lot_names:
         strip_name = name.replace(' ', '')
-        if parking_data[strip_name]['AvailableSpaces'] in ('Closed', 'FULL'):
+        if parking_data[strip_name]['AvailableSpaces'] in ('Closed', '0'):
             closed_lots.append(name)
         else:
             avail_lots.append(name)
@@ -260,7 +260,7 @@ def get_optimal_lots():
         for name in lot_names:
             strip_name = name.replace(' ', '')
 
-            if parking_lots[strip_name]['AvailableSpaces'] in ('Closed', 'FULL'):
+            if parking_lots[strip_name]['AvailableSpaces'] in ('Closed', '0'):
                 parking_lots[strip_name]['AvailableSpaces'] = 0
 
             if int(parking_lots[strip_name]['AvailableSpaces']) >= max_num:
@@ -352,7 +352,7 @@ def build_specific_parking_msg(parking_lot):
                     parking_lot,
                     parking_data[lot_name]['Date']
                     )
-    elif parking_data[lot_name]['AvailableSpaces'] == 'FULL':
+    elif parking_data[lot_name]['AvailableSpaces'] == '0':
         return '{} is currently full.'.format(parking_lot)
     else:
         return "{} currently has {} available parking spaces.".format(
